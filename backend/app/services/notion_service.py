@@ -4,13 +4,21 @@ from datetime import datetime
 
 class NotionService:
     def __init__(self):
-        self.client = AsyncClient(auth=settings.NOTION_API_KEY)
+        if settings.NOTION_API_KEY:
+            self.client = AsyncClient(auth=settings.NOTION_API_KEY)
+        else:
+            print("Warning: NOTION_API_KEY is not set.")
+            self.client = None
         self.database_id = settings.NOTION_DATABASE_ID
 
     async def create_meeting_page(self, title: str, summary_markdown: str) -> str:
         """
         Creates a page in the Notion database and returns the URL.
         """
+        if not self.client:
+            print("Notion Client not initialized.")
+            return None
+
         if not self.database_id:
             print("Notion Database ID not set.")
             return None
