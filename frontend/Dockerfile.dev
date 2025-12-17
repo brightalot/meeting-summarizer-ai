@@ -1,0 +1,9 @@
+FROM node:20-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+# For development, we use 'npm run dev' which uses Vite (port 5173 by default)
+# But we will map host 3000 to container 5173 or configure Vite to use 3000
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+
