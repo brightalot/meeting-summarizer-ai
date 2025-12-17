@@ -40,7 +40,7 @@ class LLMService:
         try:
             # Using the async client (aio) to generate content
             response = await self.client.aio.models.generate_content(
-                model='gemini-1.5-flash',
+                model='gemini-2.5-flash',
                 contents=prompt
             )
             return response.text
