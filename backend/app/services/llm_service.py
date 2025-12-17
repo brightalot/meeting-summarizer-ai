@@ -21,20 +21,29 @@ class LLMService:
         Transcript:
         {transcript}
         
-        Please provide a structured summary in Markdown format with the following sections:
+        Please provide a structured summary in Markdown format with the following sections in Korean:
         
-        # Meeting Summary
-        (A brief overview of the meeting)
+        # 회의 요약
+        (회의에 대한 간략한 개요)
         
-        ## Key Discussion Points
-        - (Bullet points of main topics discussed)
+        ## 주요 논의 사항
+        - (논의된 주요 주제에 대한 글머리 기호)
         
-        ## Decisions Made
-        - (List of decisions agreed upon)
+        ## 결정된 사항
+        - (합의된 결정 목록)
         
-        ## Action Items
-        - [ ] (Who) : (What to do)
+        ## 액션 아이템
+        - [ ] (담당자) : (할 일)
         
+        Example Output Format:
+        # 회의 요약
+        ...
+        ## 주요 논의 사항
+        - ...
+        ## 결정된 사항
+        - ...
+        ## 액션 아이템
+        - [ ] ...
         """
         
         try:
