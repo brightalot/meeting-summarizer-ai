@@ -1,0 +1,16 @@
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
+from app.core.config import settings
+import sys
+
+# Debug: Print the DATABASE_URL being used
+print(f"Connecting to DB with URL: {settings.DATABASE_URL}", file=sys.stderr)
+
+engine = create_async_engine(settings.DATABASE_URL, echo=True)
+SessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+
+Base = declarative_base()
+
+async def get_db():
+    async with SessionLocal() as session:
+        yield session
