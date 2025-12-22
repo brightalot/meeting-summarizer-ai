@@ -2,7 +2,6 @@ from app.core.database import SessionLocal
 from app.models.meeting import Meeting, MeetingStatus
 from app.services.stt_service import stt_service
 from app.services.llm_service import llm_service
-from app.services.notion_service import notion_service
 import uuid
 
 async def run_pipeline(meeting_id: uuid.UUID):
@@ -25,22 +24,19 @@ async def run_pipeline(meeting_id: uuid.UUID):
             # Save progress
             await db.commit()
             
-            # Step 2: LLM
-            print(f"Starting summarization for meeting {meeting_id}...")
-            summary = await llm_service.summarize(transcript)
+            # Step 2: LLM 요약 생성 및 자동 Notion 저장
+            print(f"Starting summarization and automatic Notion creation for meeting {meeting_id}...")
+            summary, notion_url = await llm_service.summarize_and_save_to_notion(transcript, meeting.title)
             meeting.summary = summary
-            print(f"Summarization completed for meeting {meeting_id}.")
             
-            await db.commit()
-            
-            # Step 3: Notion
-            print(f"Creating Notion page for meeting {meeting_id}...")
-            notion_url = await notion_service.create_meeting_page(meeting.title, summary)
             if notion_url:
                 meeting.notion_page_url = notion_url
-                print(f"Notion page created: {notion_url}")
+                print(f"Notion page created automatically: {notion_url}")
             else:
-                print("Failed to create Notion page (check logs/config).")
+                print("Warning: Notion page creation failed. Summary generated but Notion page was not created.")
+            
+            print(f"Summarization completed for meeting {meeting_id}.")
+            await db.commit()
 
             meeting.status = MeetingStatus.COMPLETED.value
             await db.commit()
